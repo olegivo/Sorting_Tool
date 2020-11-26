@@ -2,6 +2,7 @@ package sorting
 
 enum class Params(val key: String, val containsValue: Boolean) {
     DataType("-dataType", true),
+    SortingType("-sortingType", true),
     SortIntegers("-sortIntegers", false);
 
     companion object {
