@@ -3,11 +3,19 @@ package sorting
 sealed class Params(val key: String, val containsValue: Boolean) {
     object DataType : Params("-dataType", true)
     object SortingType : Params("-sortingType", true)
+    object InputFile : Params("-inputFile", true)
+    object OutputFile : Params("-outputFile", true)
     class Unknown(key: String) : Params(key, false)
 
     companion object {
+        private val knownCommands = listOf(
+            DataType,
+            SortingType,
+            InputFile,
+            OutputFile
+        ).associateBy { it.key }
+
         fun parse(args: Array<String>): Map<Params, String?> {
-            val knownCommands = listOf(DataType, SortingType).associateBy { it.key }
             val map = mutableMapOf<Params, String?>()
 
             args.forEachIndexed { index, arg ->

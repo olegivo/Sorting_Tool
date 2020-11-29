@@ -1,7 +1,8 @@
 package sorting
 
 sealed class SortingTool<T>(
-    private var maxItem: T
+    private var maxItem: T,
+    private val io: IO
 )
     where T : Comparable<T> {
 
@@ -13,8 +14,8 @@ sealed class SortingTool<T>(
     protected abstract val itemsSeparator: String
 
     fun read() {
-        while (scanner.hasNextLine()) {
-            val line = scanner.nextLine()
+        while (io.hasNextLine()) {
+            val line = io.nextLine()
             for ((item, value) in getItems(line)) {
                 count++
                 items.add(item)
@@ -33,27 +34,27 @@ sealed class SortingTool<T>(
 
     fun sortNatural() {
         println("Total $subjects: $count.")
-        print("Sorted data:")
+        io.print("Sorted data:")
         map.keys
             .flatMap { key ->
                 (1..map[key]!!).map { key }
             }
-            .forEach { print("$itemsSeparator$it") }
+            .forEach { io.print("$itemsSeparator$it") }
     }
 
     fun sortByCount() {
-        print("Total $subjects: $count.")
+        io.print("Total $subjects: $count.")
         map.entries.asSequence()
             .sortedBy { it.value }
             .forEach { entry ->
                 val currentCount = entry.value
                 val percent = (currentCount.toFloat() * 100 / count.toFloat()).toInt()
-                print("\n${entry.key}: $currentCount time(s), $percent%")
+                io.print("\n${entry.key}: $currentCount time(s), $percent%")
             }
     }
 
-    private class LongSortingTool :
-        SortingTool<Long>(Long.MIN_VALUE) {
+    private class LongSortingTool(io: IO) :
+        SortingTool<Long>(Long.MIN_VALUE, io) {
 
         override val subjects = "numbers"
 
@@ -75,8 +76,8 @@ sealed class SortingTool<T>(
             "greatest number: $maxItem "
     }
 
-    private class LineSortingTool :
-        SortingTool<String>("") {
+    private class LineSortingTool(io: IO) :
+        SortingTool<String>("", io) {
 
         override val subjects: String = "lines"
 
@@ -89,8 +90,8 @@ sealed class SortingTool<T>(
             "longest line:\n$maxItem\n"
     }
 
-    private class WordSortingTool :
-        SortingTool<String>("") {
+    private class WordSortingTool(io: IO) :
+        SortingTool<String>("", io) {
 
         override val subjects: String = "words"
 
@@ -106,11 +107,11 @@ sealed class SortingTool<T>(
     }
 
     companion object {
-        fun get(dataType: String?) =
+        fun get(dataType: String?, io: IO) =
             when (dataType) {
-                "long" -> LongSortingTool()
-                "line" -> LineSortingTool()
-                "word", null -> WordSortingTool()
+                "long" -> LongSortingTool(io)
+                "line" -> LineSortingTool(io)
+                "word", null -> WordSortingTool(io)
                 else -> TODO()
             }
     }
