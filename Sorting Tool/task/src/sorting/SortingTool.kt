@@ -62,7 +62,13 @@ sealed class SortingTool<T>(
         override fun getItems(line: String): List<Pair<Long, Long>> =
             line
                 .split(' ')
-                .mapNotNull { it.toLongOrNull() }
+                .mapNotNull {
+                    val longItem = it.toLongOrNull()
+                    if (it.isNotBlank() && longItem == null) {
+                        println("\"$it\" is not a long. It will be skipped.")
+                    }
+                    longItem
+                }
                 .map { it to it }
 
         override fun getMaxItemText(maxItem: Long) =
